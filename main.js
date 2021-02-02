@@ -1,4 +1,6 @@
-
+rightWristX = 0;
+rightWristY = 0;
+rightWristScore = 0;
 /*created by prashant shukla */
 
 var paddle2 =10,paddle1=10;
@@ -29,11 +31,31 @@ function setup(){
   video.size(700,600);
   video.hide();
   poseNet = ml5.poseNet(video, modelLoaded);
+  poseNet.on('pose', gotPoses);
+}
+function gotPoses(results){
+  if(results.length > 0){
+    console.log(results);
+    rightWristX = results[0].pose.rightWrist.x;
+    rightWristY = results[0].pose.rightWrist.y;
+    rightWristScore = results[0].keypoints[10].score;
+  }
 }
 function modelLoaded(){
   console.log("poseNet Is Initialized");
 }
 function draw(){
+  if(rightWristScore >0.2){
+    r = random(255);
+    g = random(255);
+    b = random(255);
+    r2 = random(255);
+    g2 = random(255);
+    b2 = random(255);
+    fill(r,g,b);
+    stroke(r2,g2,b2);
+    circle(rightWristX, rightWristY,20);
+    }
 image(video, 0, 0, 700, 600);
  background(0); 
 
