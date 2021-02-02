@@ -1,6 +1,7 @@
 rightWristX = 0;
 rightWristY = 0;
 rightWristScore = 0;
+status = "";
 /*created by prashant shukla */
 
 var paddle2 =10,paddle1=10;
@@ -45,6 +46,7 @@ function modelLoaded(){
   console.log("poseNet Is Initialized");
 }
 function draw(){
+  if(status == "start"){
   if(rightWristScore >0.2){
     r = random(255);
     g = random(255);
@@ -94,6 +96,7 @@ image(video, 0, 0, 700, 600);
    
    //function move call which in very important
     move();
+  }
 }
 
 
@@ -190,4 +193,9 @@ function paddleInCanvas(){
   if(mouseY < 0){
     mouseY =0;
   }  
+}
+function startGame(){
+  status = "start";
+  document.getElementById("status").innerHTML = "Game Is Loaded";
+
 }
