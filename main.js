@@ -3,7 +3,11 @@ rightWristY = 0;
 rightWristScore = 0;
 status = "";
 /*created by prashant shukla */
+function preload(){
+  ball_touch = loadSound("ball_touch_paddel.wav");
+  missed= loadSound("missed.wav");
 
+}
 var paddle2 =10,paddle1=10;
 
 var paddle1X = 10,paddle1Height = 110;
@@ -27,7 +31,7 @@ var ball = {
 function setup(){
   var canvas =  createCanvas(700,600);
   canvas.center();
-
+  canvas.parent('canvas');
   video = createCapture(VIDEO);
   video.size(700,600);
   video.hide();
@@ -39,14 +43,14 @@ function gotPoses(results){
     console.log(results);
     rightWristX = results[0].pose.rightWrist.x;
     rightWristY = results[0].pose.rightWrist.y;
-    rightWristScore = results[0].keypoints[10].score;
+    rightWristScore = results[0].pose.keypoints[10].score;
   }
 }
 function modelLoaded(){
   console.log("poseNet Is Initialized");
 }
 function draw(){
-  if(status == "start"){
+  image(video, 0, 0, 700, 600);
   if(rightWristScore >0.2){
     r = random(255);
     g = random(255);
@@ -58,7 +62,8 @@ function draw(){
     stroke(r2,g2,b2);
     circle(rightWristX, rightWristY,20);
     }
-image(video, 0, 0, 700, 600);
+    
+  if(status == "start"){
  background(0); 
 
  fill("black");
@@ -76,7 +81,7 @@ image(video, 0, 0, 700, 600);
    fill(250,0,0);
     stroke(0,0,250);
     strokeWeight(0.5);
-   paddle1Y = mouseY; 
+   paddle1Y = rightWristY; 
    rect(paddle1X,paddle1Y,paddle1,paddle1Height,100);
    
    
@@ -149,11 +154,13 @@ function move(){
   if (ball.x-2.5*ball.r/2< 0){
   if (ball.y >= paddle1Y&& ball.y <= paddle1Y + paddle1Height) {
     ball.dx = -ball.dx+0.5; 
+    ball_touch.play();
   }
   else{
     pcscore++;
     reset();
     navigator.vibrate(100);
+    missed.play();
   }
 }
 if(pcscore ==4){
@@ -164,7 +171,7 @@ if(pcscore ==4){
     stroke("white");
     textSize(25)
     text("Game Over!☹☹",width/2,height/2);
-    text("Reload The Page!",width/2,height/2+30)
+    text("Press the restart button to play again",width/2,height/2+30)
     noLoop();
     pcscore = 0;
 }
@@ -198,4 +205,9 @@ function startGame(){
   status = "start";
   document.getElementById("status").innerHTML = "Game Is Loaded";
 
+}
+function restart(){
+  pcscore = 0;
+  playerscore = 0;
+  loop();
 }
